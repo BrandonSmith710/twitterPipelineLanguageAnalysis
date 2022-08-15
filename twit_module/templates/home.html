@@ -36,8 +36,24 @@
           <input type="submit" value="Compare Users">
         </form>
       </div>
+
       <div>
-        <h2>Users</h2>
+        <h2>See what topics were tweeted about</h2>
+        <form action="/topic" method="post">
+          <select name="user0">
+            {% for user in users %}
+            <option value="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+          </select>
+          <!-- <input type="text" name="tweet_text" placeholder="Tweet text to predict"> -->
+          <input type="submit" value="Get Topics">
+        </form>
+
+      </div>
+
+
+      <div>
+        <h2>Add Users</h2>
         {% for user in users %}
         <a href="/user/{{ user.name }}"><span class="stack">{{ user.name }}</span></a>
         {% endfor %}

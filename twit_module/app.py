@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from .twitter import add_or_update_user
 from .models import DB, User, Tweet
-from .predict import predict_user
+from .predict import predict_user, topicizer
 
 def create_app():
 
@@ -56,6 +56,19 @@ def create_app():
         else:
             return render_template('user.html', title = name, tweets = tweets,
                                                               message = message)
+
+    @app.route('/topic', methods = ['POST'])
+    def topic():
+        '''
+        generate a list the topics discussed in a specified
+        twitter user's recent tweets
+        '''     
+        
+        user0 = request.values['user0']
+        tweets = User.query.filter(User.username == user0).one().tweets
+        topics = topicizer(list(map(str, tweets)))
+           
+        return render_template('topics.html', title = 'Topics', message = topics)
 
     @app.route('/predict_author', methods = ['POST'])
     def predict_author():
