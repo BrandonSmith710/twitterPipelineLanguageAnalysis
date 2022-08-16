@@ -1,1 +1,1 @@
-web: gunicorn twit_module:APP -t 120 --preload
+web: gunicorn twit_module:APP -t 120
