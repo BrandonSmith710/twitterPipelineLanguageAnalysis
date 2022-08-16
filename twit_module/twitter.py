@@ -1,7 +1,8 @@
 from os import getenv
 import tweepy
-import pickle, spacy
+import pickle, spacy, pathlib
 from .models import DB, User, Tweet
+
 
 
 key = getenv('TWITTER_API_KEY')
