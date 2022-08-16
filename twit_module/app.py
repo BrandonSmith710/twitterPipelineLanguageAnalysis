@@ -18,7 +18,8 @@ def create_app():
 
     @app.route('/')
     def root():
-        return render_template('home.html', title = 'Home', users = User.query.all())
+        title = 'View who is more likely to have tweeted it'
+        return render_template('home.html', title = title, users = User.query.all())
 
     @app.route('/update')
     def update():
@@ -63,10 +64,10 @@ def create_app():
         generate a list the topics discussed in a specified
         twitter user's recent tweets
         '''     
-        
-        user0 = request.values['user0']
-        tweets = User.query.filter(User.username == user0).one().tweets
-        topics = topicizer(list(map(str, tweets)))
+
+        user = request.values['user']
+        tweets = User.query.filter(User.username == user).one().tweets
+        topics = topicizer([tweet.text for tweet in tweets])
            
         return render_template('topics.html', title = 'Topics', message = topics)
 

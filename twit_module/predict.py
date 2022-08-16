@@ -19,30 +19,25 @@ def predict_user(user0_username, user1_username, hypo_tweet_text):
     # Get a list of word embeddings for each user's tweets
     user0_vects = np.array([tweet.vect for tweet in user0.tweets])
     user1_vects = np.array([tweet.vect for tweet in user1.tweets])
-    
     # combine the user's tweet's word embeddings into one np array
     # X Matrix for training
     vects = np.vstack([user0_vects, user1_vects])
-
     # combine labels into one array
     zeros = np.zeros(len(user0.tweets))
     ones = np.ones(len(user1.tweets))
     # y vector for training
     labels = np.concatenate([zeros, ones])
-
     log_reg = LogisticRegression()
     log_reg.fit(vects, labels)
-
     # Generate a prediction for our hypothetical tweet text
     hypo_tweet_vect = vectorize_tweet(hypo_tweet_text)
-
     # pass in 2D array to the regression model
     prediction = log_reg.predict([hypo_tweet_vect])
 
     return prediction[0]
 
 
-tfidf_vect = TfidfVectorizer(max_df=.8, stop_words='english')
+tfidf_vect = TfidfVectorizer(max_df = .8, stop_words = 'english')
 
 def cleaner(text):
     """
