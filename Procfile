@@ -1,1 +1,1 @@
-web: gunicorn app:APP -t 120
+web: gunicorn twit_module:APP -t 120
