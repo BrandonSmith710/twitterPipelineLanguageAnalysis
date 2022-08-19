@@ -1,6 +1,6 @@
 from os import getenv
 import tweepy
-import pickle, spacy, pathlib
+import pickle, spacy
 from .models import DB, User, Tweet
 
 
