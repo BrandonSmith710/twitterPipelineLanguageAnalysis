@@ -50,7 +50,7 @@ def add_or_update_user(username):
         DB.session.commit()
 
 nlp = pickle.load(
-    open('spacy_en_md.pkl', 'rb')
+    open('eng_med.h5', 'rb')
     )
 
 def vectorize_tweet(tweet_text):
