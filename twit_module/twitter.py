@@ -1,6 +1,6 @@
 from os import getenv
 import tweepy
-import pickle, spacy
+import pickle, spacy, pathlib
 from .models import DB, User, Tweet
 
 
@@ -50,7 +50,7 @@ def add_or_update_user(username):
         DB.session.commit()
 
 nlp = pickle.load(
-    open('eng_med.h5', 'rb')
+    open(pathlib.Path('eng_med.h5'), 'rb')
     )
 
 def vectorize_tweet(tweet_text):
