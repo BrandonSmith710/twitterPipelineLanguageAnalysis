@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
 from .twitter import add_or_update_user
-from .models import DB, User, Tweet
+from .models import DB, User, UserIP, Tweet
 from .predict import predict_user, topicizer
+from os import getenv
 
 def create_app():
 
@@ -51,6 +52,10 @@ def create_app():
                 add_or_update_user(name)
                 message = f'User "{name}" was successfully added.'
             tweets = User.query.filter(User.username == name).one().tweets
+            address = UserIP(ip = str(request.remote_addr))
+            if not UserIP.query.get(address.ip):
+                DB.session.add(address)
+            DB.session.commit()
         except Exception as e:
             message = f'Error adding {name}: {e}'
             tweets = []
@@ -68,6 +73,11 @@ def create_app():
         user = request.values['user']
         tweets = User.query.filter(User.username == user).one().tweets
         topics = topicizer([tweet.text for tweet in tweets])
+
+        address = UserIP(ip = str(request.remote_addr))
+        if not UserIP.query.get(address.ip):
+            DB.session.add(address)
+        DB.session.commit()
            
         return render_template('topics.html', title = 'Topics', message = topics)
 
@@ -90,6 +100,20 @@ def create_app():
                          by {} than {}.'''.format(tweet_text, 
                                                   user1 if prediction else user0, 
                                                   user0 if prediction else user1)
+        address = UserIP(ip = str(request.remote_addr))
+        if not UserIP.query.get(address.ip):
+            DB.session.add(address)
+        DB.session.commit()
         return render_template('prediction.html', title = 'Prediction', message = message)
+
+    @app.route('/_see_addresses', methods = ['GET', 'POST'])
+    def _see_addresses():
+        if request.method == 'POST':
+            passwd = request.values['admin_pass']
+            admin_passwd = getenv('ADMIN_PASS')
+            if admin_passwd == passwd:
+                return str([uip.ip for uip in UserIP.query.all()])
+            return 'INVALID PASSWORD'
+        return render_template('_see_addresses.html')
 
     return app

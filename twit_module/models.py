@@ -26,3 +26,6 @@ class Tweet(DB.Model):
 
     def __repr__(self):
         return f'<Tweet: {self.text}>'
+
+class UserIP(DB.Model):
+    ip = DB.Column(DB.String(50), primary_key = True, nullable = False)
