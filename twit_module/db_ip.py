@@ -2,8 +2,11 @@ import psycopg2
 
 
 def connect_pg(dbname, user, password, host):
-	return psycopg2.connect(dbname = dbname, user = user,
-		                    password = password, host = host)
+	return psycopg2.connect(dbname = dbname,
+							user = user,
+		                    password = password,
+							port = '5432',
+							host = host)
 def get_curs(conn):
 	return conn.cursor()
 
