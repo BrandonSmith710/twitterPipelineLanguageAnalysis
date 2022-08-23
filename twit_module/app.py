@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from .twitter import add_or_update_user
-from .models import DB, User, UserIP, Tweet
+from .models import DB, User, Tweet
 from .predict import predict_user, topicizer
 from .db_ip import *
 from os import getenv
