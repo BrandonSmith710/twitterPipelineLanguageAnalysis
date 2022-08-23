@@ -8,9 +8,9 @@ from os import getenv
 def create_app():
 
     app = Flask(__name__)
-
+    pw = getenv('PASSWD')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = getenv('URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgres://dlxidkos:{pw}@heffalump.db.elephantsql.com/dlxidkos'
  
     DB.init_app(app)
 
