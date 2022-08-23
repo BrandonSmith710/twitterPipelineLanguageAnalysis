@@ -10,15 +10,8 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///twitterusers.db'
-    pg_conn = connect_pg(
-        dbname = getenv('DB_NAME'),
-        user = getenv('USER'),
-        password = getenv('PASSWD'),
-        host = getenv('HOST')
-        )
-    pg_curs = get_curs(pg_conn)
-    init_ip_table(pg_curs, pg_conn)
+    app.config['SQLALCHEMY_DATABASE_URI'] = getenv('URI')
+ 
     DB.init_app(app)
 
     @app.before_first_request
@@ -60,7 +53,6 @@ def create_app():
                 add_or_update_user(name)
                 message = f'User "{name}" was successfully added.'
             tweets = User.query.filter(User.username == name).one().tweets
-            insert_ip(pg_curs, pg_conn, request.remote_addr)
         except Exception as e:
             message = f'Error adding {name}: {e}'
             tweets = []
@@ -78,7 +70,6 @@ def create_app():
         user = request.values['user']
         tweets = User.query.filter(User.username == user).one().tweets
         topics = topicizer([tweet.text for tweet in tweets])
-        insert_ip(pg_curs, pg_conn, request.remote_addr)
            
         return render_template('topics.html', title = 'Topics', message = topics)
 
@@ -101,17 +92,16 @@ def create_app():
                          by {} than {}.'''.format(tweet_text, 
                                                   user1 if prediction else user0, 
                                                   user0 if prediction else user1)
-        insert_ip(pg_curs, pg_conn, request.remote_addr)
         return render_template('prediction.html', title = 'Prediction', message = message)
 
-    @app.route('/_see_addresses', methods = ['GET', 'POST'])
-    def _see_addresses():
-        if request.method == 'POST':
-            passwd = request.values['admin_pass']
-            admin_passwd = getenv('ADMIN_PASS')
-            if admin_passwd == passwd:
-                return get_ips(pg_curs)
-            return 'INVALID PASSWORD'
-        return render_template('_see_addresses.html')
+    # @app.route('/_see_addresses', methods = ['GET', 'POST'])
+    # def _see_addresses():
+    #     if request.method == 'POST':
+    #         passwd = request.values['admin_pass']
+    #         admin_passwd = getenv('ADMIN_PASS')
+    #         if admin_passwd == passwd:
+    #             return get_ips(pg_curs)
+    #         return 'INVALID PASSWORD'
+    #     return render_template('_see_addresses.html')
 
     return app
