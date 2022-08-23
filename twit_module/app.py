@@ -4,6 +4,7 @@ from .models import DB, User, Tweet
 from .predict import predict_user, topicizer
 from .db_ip import *
 from os import getenv
+import psycopg2
 
 def create_app():
 
