@@ -52,7 +52,11 @@ def create_app():
                 add_or_update_user(name)
                 message = f'User "{name}" was successfully added.'
             tweets = User.query.filter(User.username == name).one().tweets
-            address = UserIP(ip = str(request.remote_addr))
+            if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+                addr = request.environ['REMOTE_ADDR']
+            else:
+                addr = request.environ['HTTP_X_FORWARDED_FOR']
+            address = UserIP(ip = str(addr))
             if not UserIP.query.get(address.ip):
                 DB.session.add(address)
             DB.session.commit()
@@ -73,7 +77,11 @@ def create_app():
         user = request.values['user']
         tweets = User.query.filter(User.username == user).one().tweets
         topics = topicizer([tweet.text for tweet in tweets])
-        address = UserIP(ip = str(request.remote_addr))
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            addr = request.environ['REMOTE_ADDR']
+        else:
+            addr = request.environ['HTTP_X_FORWARDED_FOR']
+        address = UserIP(ip = str(addr))
         if not UserIP.query.get(address.ip):
             DB.session.add(address)
         DB.session.commit()
@@ -99,7 +107,11 @@ def create_app():
                          by {} than {}.'''.format(tweet_text, 
                                                   user1 if prediction else user0, 
                                                   user0 if prediction else user1)
-        address = UserIP(ip = str(request.remote_addr))
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            addr = request.environ['REMOTE_ADDR']
+        else:
+            addr = request.environ['HTTP_X_FORWARDED_FOR']
+        address = UserIP(ip = str(addr))
         if not UserIP.query.get(address.ip):
             DB.session.add(address)
         DB.session.commit()
