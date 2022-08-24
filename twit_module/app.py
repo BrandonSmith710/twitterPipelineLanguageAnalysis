@@ -3,7 +3,7 @@ from .twitter import add_or_update_user
 from .models import DB, User, UserIP, Tweet
 from .predict import predict_user, topicizer
 from os import getenv
-
+import psycopg2
 
 def create_app():
 
